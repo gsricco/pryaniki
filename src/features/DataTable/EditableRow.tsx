@@ -61,7 +61,7 @@ const EditableRow: FC<EditableRowProps> = ({
             helperText={touched[field] && errors[field]}
           />
         </TableCell>
-      ))}F
+      ))}
       <TableCell>
         <>
           <Button onClick={submitForm}>Save</Button>

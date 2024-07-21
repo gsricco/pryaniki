@@ -185,7 +185,6 @@ export const DataTable = () => {
           Create a new entry
         </Button>
       </Box>
-
       <Snackbar open={snackbarOpen} autoHideDuration={6000} onClose={handleSnackbarClose}>
         <Alert onClose={handleSnackbarClose} severity={snackbarSeverity}>
           {snackbarMessage}
