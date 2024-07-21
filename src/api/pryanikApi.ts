@@ -1,58 +1,67 @@
-import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
+import {createApi, fetchBaseQuery} from '@reduxjs/toolkit/query/react';
+import {
+  DocumentCreateUpdateItemType, DocumentsResponseType, LoginResponseType,
+  LoginType
+} from "./types";
+import {getItem} from "../common/hooks/useLocalStorage";
 
-export const authApi = createApi({
-  reducerPath: 'authApi',
+export const pryanikApi = createApi({
+  reducerPath: 'pryanikApi',
   baseQuery: fetchBaseQuery({
     baseUrl: `${process.env.REACT_APP_DOMAIN_URL}${process.env.REACT_APP_API_URL}`,
     prepareHeaders: (headers) => {
-      const token = localStorage.getItem('token');
+      const token = getItem('token');
       if (token) {
         headers.set('x-auth', token);
       }
       return headers;
     },
   }),
+  tagTypes: ['Documents'],
   endpoints: (builder) => ({
-    login: builder.mutation<{ token: string }, { username: string; password: string }>({
+    login: builder.mutation<LoginResponseType, LoginType>({
       query: (body) => ({
         url: 'login',
         method: 'POST',
         body,
       }),
     }),
-    fetchData: builder.query<any[], void>({
+    getDocuments: builder.query<DocumentsResponseType, void>({
       query: () => ({
         url: 'userdocs/get',
         method: 'GET',
       }),
     }),
-    createRecord: builder.mutation<any, any>({
+    createDocument: builder.mutation<ResponseType, DocumentCreateUpdateItemType>({
       query: (body) => ({
         url: 'userdocs/create',
         method: 'POST',
         body,
       }),
+      invalidatesTags: ['Documents'],
     }),
-    updateRecord: builder.mutation<any, { id: string; data: any }>({
-      query: ({ id, data }) => ({
+    updateDocument: builder.mutation<ResponseType, { id: string; data: DocumentCreateUpdateItemType }>({
+      query: ({id, data}) => ({
         url: `userdocs/set/${id}`,
         method: 'POST',
         body: data,
       }),
+      invalidatesTags: ['Documents'],
     }),
-    deleteRecord: builder.mutation<any, string>({
+    deleteDocument: builder.mutation<ResponseType, string>({
       query: (id) => ({
         url: `userdocs/delete/${id}`,
         method: 'POST',
       }),
+      invalidatesTags: ['Documents'],
     }),
   }),
 });
 
 export const {
   useLoginMutation,
-  useFetchDataQuery,
-  useCreateRecordMutation,
-  useUpdateRecordMutation,
-  useDeleteRecordMutation,
-} = authApi;
+  useGetDocumentsQuery,
+  useCreateDocumentMutation,
+  useDeleteDocumentMutation,
+  useUpdateDocumentMutation,
+} = pryanikApi;
